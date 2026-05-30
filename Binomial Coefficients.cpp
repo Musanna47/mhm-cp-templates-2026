@@ -9,11 +9,11 @@ const int MOD = 1e9 + 7;
 ll fac[MAXN + 1];
 ll inv[MAXN + 1];
 
-ll expo(ll base, ll pow) {
+ll expo(ll base, ll pow, ll mod = MOD) {
     ll ans = 1;
     while (pow) {
-        if (pow & 1) ans = ans * base % MOD;
-        base = base * base % MOD;
+        if (pow & 1) ans = ans * base % mod;
+        base = base * base % mod;
         pow >>= 1;
     }
     return ans;
@@ -30,4 +30,3 @@ void inverses() {
 }
 
 ll choose(int n, int k) { return fac[n] * inv[k] % MOD * inv[n - k] % MOD; }
-
