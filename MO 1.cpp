@@ -46,34 +46,34 @@ using vpll = V<pll>;
 
 
 template<typename T>
-void pout(T &a, string sep = " ", string fin = "\n") {
+void pout(T& a, string sep = " ", string fin = "\n") {
     cout << a.first << sep << a.second << fin;
 }
 
 template<typename T>
-void print(T &a, ll l, ll r, string sep = " ", string fin = "\n") {
+void print(T& a, ll l, ll r, string sep = " ", string fin = "\n") {
     for (ll i = l; i <= r; i++)
         cout << a[i] << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairs(T &a, ll l, ll r, string fin = "\n") {
+void printPairs(T& a, ll l, ll r, string fin = "\n") {
     for (ll i = l; i <= r; i++)
         pout(a[i]);
     cout << fin;
 }
 
 template<typename T>
-void printAll(T &a, string sep = " ", string fin = "\n") {
-    for (auto &ele: a)
+void printAll(T& a, string sep = " ", string fin = "\n") {
+    for (auto& ele : a)
         cout << ele << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairsAll(T &a, string fin = "\n") {
-    for (auto &ele: a)
+void printPairsAll(T& a, string fin = "\n") {
+    for (auto& ele : a)
         pout(ele);
     cout << fin;
 }
@@ -95,13 +95,13 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
 
 template<typename T>
-void makeUnique(T &a) {
+void makeUnique(T& a) {
     a.erase(unique(all(a)), a.end());
 }
 
@@ -118,60 +118,48 @@ void prec() {
 
 }
 
-const int N = 3e4;
-const int SZ = 174;
-int a[N], cnt[1000001];
-
-const int Q = 2e5;
+const int N = 2e5 + 5, Q = 2e5 + 5;
+const int SZ = 461;
 
 struct Query {
     int l, r, idx;
-
     bool operator<(Query other) const {
-        return pii{l / SZ, r} < pii{other.l / SZ, other.r};
+        return pii{ l / SZ, r } < pii{ other.l / SZ, other.r };
     }
 } queries[Q];
 
-int ans[Q];
-int curr_ans = 0;
-
 void add(int u) {
-    if (cnt[a[u]] == 0) curr_ans++;
-    cnt[a[u]]++;
 }
 
 void del(int u) {
-    cnt[a[u]]--;
-    if (cnt[a[u]] == 0) curr_ans--;
+}
+
+void getAns() {
 }
 
 void solve() {
     int n;
-    read(n);
-
-    vin(a, 0, n - 1);
-
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        // cin >> a[i];
+    }
     int q;
-    read(q);
-    REPF(i, 0, q - 1) {
+    cin >> q;
+    for (int i = 0; i < q; i++) {
         int l, r;
-        read(l, r);
+        cin >> l >> r;
         l--, r--;
         queries[i].l = l, queries[i].r = r, queries[i].idx = i;
     }
-
     sort(queries, queries + q);
-
     int curr_l = 0, curr_r = -1;
-    REPF(i, 0, q - 1) {
+    for (int i = 0; i < q; i++) {
         while (curr_l > queries[i].l) { add(--curr_l); }
         while (curr_r < queries[i].r) { add(++curr_r); }
         while (curr_l < queries[i].l) { del(curr_l++); }
         while (curr_r > queries[i].r) { del(curr_r--); }
-        ans[queries[i].idx] = curr_ans;
+        getAns();
     }
-
-    print(ans, 0, q - 1, nl, "");
 }
 
 
@@ -181,7 +169,7 @@ signed main() {
         freopen("input.txt", "r", stdin);
         freopen("output.txt", "w", stdout);
 #endif
-    };
+        };
 
     cin.tie(0)->sync_with_stdio(0);
 

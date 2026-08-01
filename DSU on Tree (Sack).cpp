@@ -113,10 +113,57 @@ mt19937_64 rnd(239);
 
 void prec() {}
 
+const int N = 2e5 + 5;
+int sz[N], tin[N], tout[N], node_at[N], heavy[N], timer = 0;
+vi G[N];
+
+void dfs_sz(int u = 1, int p = 1) {
+    sz[u] = 1; tin[u] = ++timer; node_at[timer] = u; heavy[u] = 0;
+    int max_sz = 0;
+    for (auto& v : G[u]) {
+        if (v == p) continue;
+        dfs_sz(v, u);
+        sz[u] += sz[v];
+        if (sz[v] > max_sz) {
+            max_sz = sz[v]; heavy[u] = v;
+        }
+    }
+    tout[u] = timer;
+}
+
+void add(int u) {
+}
+
+void del(int u) {
+}
+
+void getAns(int u) {
+}
+
+void dfs_sack(int u = 1, int p = 1, bool keep = false) {
+    for (auto& v : G[u]) {
+        if (v == p || v == heavy[u]) continue;
+        dfs_sack(v, u, false);
+    }
+    if (heavy[u]) {
+        dfs_sack(heavy[u], u, true);
+    }
+    for (auto& v : G[u]) {
+        if (v == p || v == heavy[u]) continue;
+        for (int t = tin[v]; t <= tout[v]; t++) {
+            add(node_at[t]);
+        }
+    }
+    add(u);
+    getAns(u);
+    if (!keep) {
+        for (int t = tin[u]; t <= tout[u]; t++) {
+            del(node_at[t]);
+        }
+    }
+}
+
 void solve() {
-    int n;
-    read(n);
-    outln(n);
 }
 
 void OJ() {
