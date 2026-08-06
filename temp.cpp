@@ -111,6 +111,10 @@ const double EPS = 1e-12;
 mt19937_64 rnd(239);
 // mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
+#define RET(x) cout << x << nl; return
+#define YES cout << "YES" << nl; return
+#define NO cout << "NO" << nl; return
+
 void prec() {}
 
 void solve() {
