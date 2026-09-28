@@ -34,24 +34,18 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
 
 //--------------------------------------------------------------------------
-const int R = 1005, C = 1005;
-ll tree[R][C];
-
-inline namespace BIT2D {
+template<typename T = int>
+struct BIT2D {
     int r, c;
+    vector<vector<T>> tree;
 
-    void build(int _r, int _c) {
-        r = _r, c = _c;
-        REPF(i, 0, r) {
-            fill(tree[i], tree[i] + c + 5, 0);
-        }
-    }
+    BIT2D(int r, int c) : r(r), c(c), tree(r + 1, vector<T>(c + 1)) {}
 
     void update(int x, int y, ll val) {
         for (int i = x; i <= r; i += (i & -i)) {
@@ -73,7 +67,7 @@ inline namespace BIT2D {
 
     ll rangeQuery(int x1, int y1, int x2, int y2) {
         return pointQuery(x2, y2) - pointQuery(x1 - 1, y2)
-               - pointQuery(x2, y1 - 1) + pointQuery(x1 - 1, y1 - 1);
+            - pointQuery(x2, y1 - 1) + pointQuery(x1 - 1, y1 - 1);
     }
-}
+};
 //--------------------------------------------------------------------------

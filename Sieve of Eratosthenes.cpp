@@ -14,7 +14,7 @@ void sieve() {
     isPrime[0] = isPrime[1] = false;
     for (int i = 2; i * i <= MAXN; i++) {
         if (isPrime[i]) {
-            for (ll j = 1LL * i * i; j <= MAXN; j += i)
+            for (int j = i * i; j <= MAXN; j += i)
                 isPrime[j] = false;
         }
     }

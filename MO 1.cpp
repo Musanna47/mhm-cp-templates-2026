@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 #define nl "\n"
 #define REPF(_i, _a, _b) for(int _i = _a; _i <= _b; _i++)
 #define REPB(_i, _a, _b) for(int _i = _a; _i >= _b; _i--)
@@ -18,7 +17,6 @@ using namespace std;
 #define sort_des(_x) sort(all(_x), greater())
 #define min_heap(_T, _pq, _cmp) auto _cmp = greater(); priority_queue<_T, vector<_T>, decltype(_cmp)> _pq(_cmp)
 
-
 template<typename T1, typename T2>
 using P = pair<T1, T2>;
 template<typename T>
@@ -29,7 +27,6 @@ template<typename T>
 using VVV = V<V<V<T>>>;
 template<typename T>
 using VVVV = V<V<V<V<T>>>>;
-
 
 using S = string;
 using ll = long long;
@@ -43,7 +40,6 @@ using vll = V<ll>;
 using vvll = VV<ll>;
 using vpii = V<pii>;
 using vpll = V<pll>;
-
 
 template<typename T>
 void pout(T& a, string sep = " ", string fin = "\n") {
@@ -114,34 +110,44 @@ const double PI = 3.141592653589793;
 const double EPS = 1e-12;
 
 
-void prec() {
+void prec() {}
 
-}
-
-const int N = 2e5 + 5, Q = 2e5 + 5;
-const int SZ = 461;
+const int N = 2e5 + 5, SZ = 461;
+int a[N], cnt[N], lq[N], rq[N], blk[N], ans[N], SQ[SZ];
 
 struct Query {
-    int l, r, idx;
+    int l, r, id;
     bool operator<(Query other) const {
         return pii{ l / SZ, r } < pii{ other.l / SZ, other.r };
     }
-} queries[Q];
+} queries[N];
 
 void add(int u) {
+    cnt[a[u]]++;
 }
 
 void del(int u) {
+    cnt[a[u]]--;
 }
 
-void getAns() {
+void getAns(int id) {
+    int l = lq[id], r = rq[id];
+    int bl = blk[l], br = blk[r];
+
+    if (bl == br) {
+        for (int i = l; i <= r; i++) ans[id] += cnt[i];
+    } else {
+        for (int i = l; blk[i] == bl; i++) ans[id] += cnt[i];
+        for (int b = bl + 1; b < br; b++) ans[id] += SQ[b];
+        for (int i = r; blk[i] == br; i--) ans[id] += cnt[i];
+    }
 }
 
-void solve() {
+void solve(int tc) {
     int n;
     cin >> n;
     for (int i = 0; i < n; i++) {
-        // cin >> a[i];
+        cin >> a[i];
     }
     int q;
     cin >> q;
@@ -149,7 +155,7 @@ void solve() {
         int l, r;
         cin >> l >> r;
         l--, r--;
-        queries[i].l = l, queries[i].r = r, queries[i].idx = i;
+        queries[i] = { l,r,i };
     }
     sort(queries, queries + q);
     int curr_l = 0, curr_r = -1;
@@ -158,22 +164,25 @@ void solve() {
         while (curr_r < queries[i].r) { add(++curr_r); }
         while (curr_l < queries[i].l) { del(curr_l++); }
         while (curr_r > queries[i].r) { del(curr_r--); }
-        getAns();
+        getAns(queries[i].id);
+    }
+    for (int i = 0; i < q; i++) {
+        cout << ans[i] << nl;
     }
 }
 
 
-signed main() {
-    auto OJ = []() -> void {
+void OJ() {
 #ifndef ONLINE_JUDGE
-        freopen("input.txt", "r", stdin);
-        freopen("output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
 #endif
-        };
+}
+
+signed main() {
+    OJ();
 
     cin.tie(0)->sync_with_stdio(0);
-
-    OJ();
 
     // cout << fixed << setprecision(10);
 
@@ -182,9 +191,8 @@ signed main() {
     int tc = 1;
     // cin >> tc;
     for (int i = 1; i <= tc; i++) {
-        // cout << "Case " << i << ": ";
-        solve();
-        // cout << nl;
+        // cout << "Case " << i << ":" << nl;
+        solve(i);
     }
 
     return 0;

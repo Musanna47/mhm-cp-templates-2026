@@ -34,32 +34,29 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
 
 //--------------------------------------------------------------------------
-const int N = 1e5 + 5, D = 18;
-int a[N], TABLE[N][D];
+template<typename T = int>
+struct SPARSE {
+    int n, D;
+    vector<vector<T>> table;
 
-inline namespace SPARSE {
-
-    template<typename T = int>
-    function<T(T, T)> func = [](T x, T y) -> T { return min(x, y); };
-
-    void build(int n) {
-        for (int i = 1; i <= n; ++i) TABLE[i][0] = a[i];
+    SPARSE(V<T>& a) : n(sza(a)), D(__lg(n) + 2), table(n + 1, vector<T>(D)) {
+        for (int i = 1; i <= n; ++i) table[i][0] = a[i];
         for (int k = 1; k < D; ++k) {
             for (int i = 1; i + (1 << k) - 1 <= n; ++i) {
-                TABLE[i][k] = func<>(TABLE[i][k - 1], TABLE[i + (1 << (k - 1))][k - 1]);
+                table[i][k] = min(table[i][k - 1], table[i + (1 << (k - 1))][k - 1]);
             }
         }
     }
 
-    ll query(int l, int r) {
+    T query(int l, int r) {
         int k = 31 - __builtin_clz(r - l + 1);
-        return func<>(TABLE[l][k], TABLE[r - (1 << k) + 1][k]);
+        return min(table[l][k], table[r - (1 << k) + 1][k]);
     }
-}
+};
 //--------------------------------------------------------------------------

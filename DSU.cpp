@@ -34,7 +34,7 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }

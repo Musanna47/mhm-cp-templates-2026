@@ -108,18 +108,45 @@ const ll LL_INF = 0x3f3f3f3f3f3f3f3f;
 const double PI = 3.141592653589793;
 const double EPS = 1e-12;
 
-mt19937_64 rng(239);
-// mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-// const int M = (1LL << 61) - 1; // Large Prime
-// const int P = uniform_int_distribution<ll>(0, M - 1)(rng); // Random Number Less Than M
-
+mt19937_64 rnd(239);
+// mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 void prec() {}
 
+const int N = 2e5 + 5;
+ll tree[4 * N], sz;
+
+void pull(int u) {
+    tree[u] = tree[u << 1] + tree[u << 1 | 1];
+}
+
+void upd(int u, int l, int r, int i, ll x) {
+    if (l == r) {
+        tree[u] = x;
+        return;
+    }
+    int mid = l + (r - l) / 2;
+    if (i <= mid) upd(u << 1, l, mid, i, x);
+    else upd(u << 1 | 1, mid + 1, r, i, x);
+    pull(u);
+}
+
+void upd(int i, ll x) {
+    upd(1, 1, sz, i, x);
+}
+
+ll query(int u, int l, int r, int ql, int qr) {
+    if (l > qr || r < ql) return 0;
+    if (l >= ql && r <= qr) return tree[u];
+    int mid = l + (r - l) / 2;
+    return query(u << 1, l, mid, ql, qr) + query(u << 1 | 1, mid + 1, r, ql, qr);
+}
+
+ll query(int ql, int qr) {
+    return query(1, 1, sz, ql, qr);
+}
+
 void solve(int tc) {
-    int n;
-    read(n);
-    outln(n);
 }
 
 void OJ() {

@@ -42,7 +42,7 @@ struct DoubleHash {
     long long concate(DoubleHash& B, int l1, int r1, int l2, int r2) {
         int len1 = r1 - l1 + 1, len2 = r2 - l2 + 1;
         long long x1 = sh1.range_hash(l1, r1),
-                  x2 = B.sh1.range_hash(l2, r2);
+            x2 = B.sh1.range_hash(l2, r2);
         x1 = (x1 * B.sh1.P[len2]) % 2091573227;
         long long newx1 = (x1 + x2) % 2091573227;
         x1 = sh2.range_hash(l1, r1);

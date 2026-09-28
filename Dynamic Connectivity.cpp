@@ -51,29 +51,29 @@ void pout(T a, string sep = " ", string fin = "\n") {
 }
 
 template<typename T>
-void print(T &a, ll l, ll r, string sep = " ", string fin = "\n") {
+void print(T& a, ll l, ll r, string sep = " ", string fin = "\n") {
     for (ll i = l; i <= r; i++)
         cout << a[i] << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairs(T &a, ll l, ll r, string fin = "\n") {
+void printPairs(T& a, ll l, ll r, string fin = "\n") {
     for (ll i = l; i <= r; i++)
         pout(a[i]);
     cout << fin;
 }
 
 template<typename T>
-void printAll(T &a, string sep = " ", string fin = "\n") {
-    for (auto &ele: a)
+void printAll(T& a, string sep = " ", string fin = "\n") {
+    for (auto& ele : a)
         cout << ele << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairsAll(T &a, string fin = "\n") {
-    for (auto &ele: a)
+void printPairsAll(T& a, string fin = "\n") {
+    for (auto& ele : a)
         pout(ele);
     cout << fin;
 }
@@ -95,13 +95,13 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
 
 template<typename T>
-void makeUnique(T &a) {
+void makeUnique(T& a) {
     a.erase(unique(all(a)), a.end());
 }
 
@@ -179,7 +179,7 @@ struct SEG {
     SEG(int n, int sz) : sz(sz), dsu(n), updates(4 * sz + 5) {}
 
     void update(int x, int l, int r, int i) {
-        auto &[u, v, ql, qr] = edges[i];
+        auto& [u, v, ql, qr] = edges[i];
         if (l >= ql && r <= qr) {
             updates[x].emplace_back(i);
             return;
@@ -196,19 +196,19 @@ struct SEG {
     }
 
     void dfs(int x, int l, int r) {
-        for (auto &i: updates[x]) {
-            auto &[u, v, ql, qr] = edges[i];
+        for (auto& i : updates[x]) {
+            auto& [u, v, ql, qr] = edges[i];
             dsu.unite(u, v);
         }
         if (l == r) {
             ans[l] = dsu.comp;
-            for (auto &i: updates[x]) { dsu.rollback(); }
+            for (auto& i : updates[x]) { dsu.rollback(); }
             return;
         }
         int mid = (l + r) >> 1;
         dfs(x << 1, l, mid);
         dfs(x << 1 | 1, mid + 1, r);
-        for (auto &i: updates[x]) { dsu.rollback(); }
+        for (auto& i : updates[x]) { dsu.rollback(); }
     }
 
     void dfs() {
@@ -216,7 +216,7 @@ struct SEG {
     }
 };
 
-void solve() {
+void solve(int tc) {
     int n, m, q;
     read(n, m, q);
     int sz = m + q;
@@ -244,18 +244,17 @@ void solve() {
     print(ans, m, m + q);
 }
 
+void OJ() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+}
 
 signed main() {
-    auto OJ = []() -> void {
-#ifndef ONLINE_JUDGE
-        freopen("input.txt", "r", stdin);
-        freopen("output.txt", "w", stdout);
-#endif
-    };
+    OJ();
 
     cin.tie(0)->sync_with_stdio(0);
-
-    OJ();
 
     // cout << fixed << setprecision(10);
 
@@ -264,9 +263,8 @@ signed main() {
     int tc = 1;
     // cin >> tc;
     for (int i = 1; i <= tc; i++) {
-        // cout << "Case " << i << ": ";
-        solve();
-        // cout << nl;
+        // cout << "Case " << i << ":" << nl;
+        solve(i);
     }
 
     return 0;

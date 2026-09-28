@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 #define nl "\n"
 #define REPF(_i, _a, _b) for(int _i = _a; _i <= _b; _i++)
 #define REPB(_i, _a, _b) for(int _i = _a; _i >= _b; _i--)
@@ -18,7 +17,6 @@ using namespace std;
 #define sort_des(_x) sort(all(_x), greater())
 #define min_heap(_T, _pq, _cmp) auto _cmp = greater(); priority_queue<_T, vector<_T>, decltype(_cmp)> _pq(_cmp)
 
-
 template<typename T1, typename T2>
 using P = pair<T1, T2>;
 template<typename T>
@@ -29,7 +27,6 @@ template<typename T>
 using VVV = V<V<V<T>>>;
 template<typename T>
 using VVVV = V<V<V<V<T>>>>;
-
 
 using S = string;
 using ll = long long;
@@ -44,9 +41,8 @@ using vvll = VV<ll>;
 using vpii = V<pii>;
 using vpll = V<pll>;
 
-
 template<typename T>
-void pout(T a, string sep = " ", string fin = "\n") {
+void pout(T& a, string sep = " ", string fin = "\n") {
     cout << a.first << sep << a.second << fin;
 }
 
@@ -114,109 +110,70 @@ const double PI = 3.141592653589793;
 const double EPS = 1e-12;
 
 
-void prec() {
+void prec() {}
 
-}
-
-struct DSU {
-    int n, comp;
-    vector<int> par, sz;
-    vector<tuple<int, int, int>> history; // t, v, sz[u]
-
-    DSU() = default;
-
-    DSU(int n) : n(n), comp(n), par(n + 1), sz(n + 1, 1) {
-        iota(all(par), 0);
-        history.emplace_back(0, 0, 0);
-    }
-
-    int find(int u) {
-        return u == par[u] ? u : find(par[u]);
-    }
-
-    void unite(int u, int v, int t) {
-        u = find(u), v = find(v);
-        if (u == v) return;
-        if (sz[u] < sz[v]) swap(u, v);
-        history.emplace_back(t, v, sz[u]);
-        sz[u] += sz[v];
-        par[v] = u;
-        comp--;
-    }
-
-    void rollback(int cp = 0) {
-        while (cp < get<0>(history.back())) {
-            auto [t, v, szu] = history.back();
-            history.pop_back();
-            auto u = par[v];
-            sz[u] = szu;
-            par[v] = v;
-            comp++;
-        }
-    }
-};
-
-const int N = 5e4, SQ = 225;
-int ans[N];
-pii edges[N];
+const int N = 2e5 + 5, SZ = 461;
+int a[N], cnt[N], lq[N], rq[N], blk[N], ans[N], SQ[SZ];
 
 struct Query {
-    int l, r, idx;
-
-    Query(int l, int r, int idx) : l(l), r(r), idx(idx) {}
-
-    bool operator<(Query& other) {
-        if (r == other.r) return l > other.l;
-        return r < other.r;
+    int l, r, id;
+    bool operator<(const Query& other) const {
+        int b1 = l / SZ;
+        int b2 = other.l / SZ;
+        if (b1 != b2) return b1 < b2;
+        return (b1 & 1) ? (r < other.r) : (r > other.r); // Even/Odd optimization
     }
-};
+} queries[N];
 
-vector<Query> queries[SQ];
+void add(int u) {
+    cnt[a[u]]++;
+}
+
+void del(int u) {
+    cnt[a[u]]--;
+}
+
+void getAns(int id) {
+    int l = lq[id], r = rq[id];
+    int bl = blk[l], br = blk[r];
+
+    if (bl == br) {
+        for (int i = l; i <= r; i++) ans[id] += cnt[i];
+    } else {
+        for (int i = l; blk[i] == bl; i++) ans[id] += cnt[i];
+        for (int b = bl + 1; b < br; b++) ans[id] += SQ[b];
+        for (int i = r; blk[i] == br; i--) ans[id] += cnt[i];
+    }
+}
 
 void solve(int tc) {
-    int n, m;
-    read(n, m);
-    REPF(i, 0, m - 1) {
-        read(edges[i].first, edges[i].second);
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
     }
     int q;
-    read(q);
-    REPF(i, 0, q - 1) {
+    cin >> q;
+    for (int i = 0; i < q; i++) {
         int l, r;
-        read(l, r);
+        cin >> l >> r;
         l--, r--;
-        queries[l / SQ].emplace_back(l, r, i);
+        queries[i] = { l,r,i };
     }
-    for (auto& i : queries) {
-        sort(all(i));
+    sort(queries, queries + q);
+    int curr_l = 0, curr_r = -1;
+    for (int i = 0; i < q; i++) {
+        while (curr_l > queries[i].l) { add(--curr_l); }
+        while (curr_r < queries[i].r) { add(++curr_r); }
+        while (curr_l < queries[i].l) { del(curr_l++); }
+        while (curr_r > queries[i].r) { del(curr_r--); }
+        getAns(queries[i].id);
     }
-    DSU dsu(n);
-    int br = -1;
-    REPF(i, 0, SQ - 1) {
-        int j;
-        br += SQ;
-        for (j = 0; j < sza(queries[i]) && queries[i][j].r <= br; j++) {
-            auto& [l, r, idx] = queries[i][j];
-            REPF(k, l, r) dsu.unite(edges[k].first, edges[k].second, 1);
-            ans[idx] = dsu.comp;
-            dsu.rollback();
-        }
-        int cr = br + 1, time = 0;
-        for (; j < sza(queries[i]);) {
-            int R = queries[i][j].r;
-            for (; cr <= R; cr++) dsu.unite(edges[cr].first, edges[cr].second, ++time);
-            int cp = ++time, cl = br;
-            for (; j < sza(queries[i]) && queries[i][j].r == R; j++) {
-                auto& [l, r, idx] = queries[i][j];
-                for (; cl >= l; cl--) dsu.unite(edges[cl].first, edges[cl].second, ++time);
-                ans[idx] = dsu.comp;
-            }
-            dsu.rollback(cp);
-        }
-        dsu.rollback();
+    for (int i = 0; i < q; i++) {
+        cout << ans[i] << nl;
     }
-    print(ans, 0, q - 1, nl, "");
 }
+
 
 void OJ() {
 #ifndef ONLINE_JUDGE

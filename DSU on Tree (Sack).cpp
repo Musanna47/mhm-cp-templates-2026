@@ -163,7 +163,7 @@ void dfs_sack(int u = 1, int p = 1, bool keep = false) {
     }
 }
 
-void solve() {
+void solve(int tc) {
 }
 
 void OJ() {
@@ -186,7 +186,7 @@ signed main() {
     // cin >> tc;
     for (int i = 1; i <= tc; i++) {
         // cout << "Case " << i << ":" << nl;
-        solve();
+        solve(i);
     }
 
     return 0;

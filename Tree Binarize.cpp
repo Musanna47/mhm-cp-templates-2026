@@ -8,9 +8,9 @@ const int M = 2 * N;       // Total number of edges
 
 int n; // n will be modified by binarize()
 int o = 2, to[M], wgt[M], prv[M], nxt[M];
-int lst[N], deg[N];
+int lst[N], deg[N], sub[M], bad[M];
 
-void add_edge (int u, int v, int w) {
+void add_edge(int u, int v, int w) {
     to[o] = v; // directed endpoint of the edge
     wgt[o] = w; // weight of the edge
     deg[v]++; // degree for binarizing purposes
@@ -20,7 +20,7 @@ void add_edge (int u, int v, int w) {
     o++; // storing bidirectional edgese sequentially in this way means at any moment (o, o^1) will give the same edge from different side
 }
 
-void binarize (int u, int f = 0) {
+void binarize(int u, int f = 0) {
     int d = deg[u] - 2 - (f != 0);
     if (d > 0) {
         int tmp_lst = (to[lst[u]] == f ? prv[lst[u]] : lst[u]), x;
@@ -52,8 +52,8 @@ void binarize (int u, int f = 0) {
  * You will first create the graph in the following fashion:
  */
 
-// Sample main function
-int main () {
+ // Sample main function
+int main() {
     for (int i = 1; i < n; ++i) {
         int u, v, w; scanf("%d %d %d", &u, &v, &w);
         add_edge(u, v, w);
@@ -70,7 +70,7 @@ int main () {
  * Here is a sample dfs function to calculate subtree sizes, just to ilustrate how to use this edge list representation
  */
 
-void dfs_siz (int u, int f) {
+void dfs_siz(int u, int f) {
     sub[u] = 1;
     for (int e = lst[u]; e; e = prv[e])
         if (!bad[to[e]] && to[e] ^ f) {

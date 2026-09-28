@@ -3,7 +3,7 @@
 using namespace std;
 
 
-const int LEN = 32;
+const int LEN = 31;
 
 bitset<LEN> bs;
 // bs - count, size, all, any, none, set, reset, flip, to_string, to_ulong, to_ullong

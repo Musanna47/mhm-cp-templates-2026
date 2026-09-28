@@ -108,18 +108,87 @@ const ll LL_INF = 0x3f3f3f3f3f3f3f3f;
 const double PI = 3.141592653589793;
 const double EPS = 1e-12;
 
-mt19937_64 rng(239);
-// mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-// const int M = (1LL << 61) - 1; // Large Prime
-// const int P = uniform_int_distribution<ll>(0, M - 1)(rng); // Random Number Less Than M
-
+mt19937_64 rnd(239);
+// mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 void prec() {}
 
+const int N = 2e5 + 5;
+ll tree[4 * N], lazy[4 * N], sz, ans[N];
+pll a[N], b[N];
+vi add[N], sub[N];
+
+void pull(int u) {
+    tree[u] = tree[u << 1] + tree[u << 1 | 1];
+}
+
+void push(int u, int l, int r) {
+    if (lazy[u]) {
+        tree[u] += lazy[u] * (r - l + 1);
+        if (l != r) {
+            lazy[u << 1] += lazy[u];
+            lazy[u << 1 | 1] += lazy[u];
+        }
+        lazy[u] = 0;
+    }
+}
+
+void upd(int u, int l, int r, int ql, int qr, ll x) {
+    push(u, l, r);
+    if (l > qr || r < ql) return;
+    if (l >= ql && r <= qr) {
+        lazy[u] = x;
+        push(u, l, r);
+        return;
+    }
+    int mid = l + (r - l) / 2;
+    upd(u << 1, l, mid, ql, qr, x);
+    upd(u << 1 | 1, mid + 1, r, ql, qr, x);
+    pull(u);
+}
+
+void upd(int ql, int qr, ll x) {
+    upd(1, 1, sz, ql, qr, x);
+}
+
+ll query(int u, int l, int r, int ql, int qr) {
+    push(u, l, r);
+    if (l > qr || r < ql) return 0;
+    if (l >= ql && r <= qr) return tree[u];
+    int mid = l + (r - l) / 2;
+    return query(u << 1, l, mid, ql, qr) + query(u << 1 | 1, mid + 1, r, ql, qr);
+}
+
+ll query(int ql, int qr) {
+    return query(1, 1, sz, ql, qr);
+}
+
 void solve(int tc) {
-    int n;
-    read(n);
-    outln(n);
+    int row, col, q;
+    read(row, col, q);
+    sz = col;
+    REPF(i, 1, row) {
+        read(a[i].first, a[i].second);
+    }
+    REPF(i, 1, q) {
+        int l, r, x, y;
+        read(l, r, x, y);
+        b[i] = { x,y };
+        add[r].eb(i);
+        sub[l - 1].eb(i);
+    }
+    REPF(i, 1, row) {
+        upd(a[i].first, a[i].second, 1);
+        for (auto& id : sub[i]) {
+            ans[id] -= query(b[id].first, b[id].second);
+        }
+        for (auto& id : add[i]) {
+            ans[id] += query(b[id].first, b[id].second);
+        }
+    }
+    REPF(i, 1, q) {
+        cout << ans[i] << nl;
+    }
 }
 
 void OJ() {

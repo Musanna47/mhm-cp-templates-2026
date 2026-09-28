@@ -11,11 +11,10 @@ int main() {
 
     auto cmp = [](int a, int b) -> bool {
         return a < b;
-    };
+        };
 
     set<int, decltype(cmp)> s2(cmp);
     priority_queue<int, vector<int>, decltype(cmp)> pq2(cmp);
-
 
     return 0;
 }

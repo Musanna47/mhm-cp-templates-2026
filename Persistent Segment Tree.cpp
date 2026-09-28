@@ -108,18 +108,91 @@ const ll LL_INF = 0x3f3f3f3f3f3f3f3f;
 const double PI = 3.141592653589793;
 const double EPS = 1e-12;
 
-mt19937_64 rng(239);
-// mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-// const int M = (1LL << 61) - 1; // Large Prime
-// const int P = uniform_int_distribution<ll>(0, M - 1)(rng); // Random Number Less Than M
-
+mt19937_64 rnd(239);
+// mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 void prec() {}
 
+struct Node {
+    Node* lc = nullptr, * rc = nullptr;
+    ll sum = 0;
+};
+
+const int N = 2e5 + 5;
+int sz, a[N];
+Node* tree[N];
+
+void pull(Node* u) {
+    u->sum = u->lc->sum + u->rc->sum;
+}
+
+void build(Node* u, int l, int r) {
+    if (l == r) {
+        u->sum = a[l];
+        return;
+    }
+    int mid = l + (r - l) / 2;
+    build(u->lc = new Node, l, mid);
+    build(u->rc = new Node, mid + 1, r);
+    pull(u);
+}
+
+void build(int n) {
+    sz = n;
+    build(tree[1] = new Node, 1, sz);
+}
+
+void upd(Node* u, Node* v, int l, int r, int i, int x) {
+    if (l == r) {
+        v->sum = x;
+        return;
+    }
+    v->lc = u->lc, v->rc = u->rc;
+    int mid = l + (r - l) / 2;
+    if (i <= mid) upd(u->lc, v->lc = new Node, l, mid, i, x);
+    else upd(u->rc, v->rc = new Node, mid + 1, r, i, x);
+    pull(v);
+}
+
+void upd(Node* u, Node* v, int i, int x) {
+    upd(u, v, 1, sz, i, x);
+}
+
+ll query(Node* u, int l, int r, int ql, int qr) {
+    if (l > qr || r < ql) return 0;
+    if (l >= ql && r <= qr) return u->sum;
+    int mid = l + (r - l) / 2;
+    return query(u->lc, l, mid, ql, qr) + query(u->rc, mid + 1, r, ql, qr);
+}
+
+ll query(Node* u, int ql, int qr) {
+    return query(u, 1, sz, ql, qr);
+}
+
 void solve(int tc) {
-    int n;
-    read(n);
-    outln(n);
+    int n, q;
+    read(n, q);
+    REPF(i, 1, n) read(a[i]);
+    build(n);
+    int tot = 1;
+    while (q--) {
+        int t;
+        read(t);
+        if (t == 1) {
+            int k, i, x;
+            read(k, i, x);
+            Node* u = tree[k];
+            upd(u, tree[k] = new Node, i, x);
+        } else if (t == 2) {
+            int k, l, r;
+            read(k, l, r);
+            outln(query(tree[k], l, r));
+        } else {
+            int k;
+            read(k);
+            tree[++tot] = tree[k];
+        }
+    }
 }
 
 void OJ() {

@@ -4,7 +4,7 @@ using namespace std;
 using ll = long long;
 
 ll myFloor(ll x, ll y) {
-    assert (y != 0);
+    assert(y != 0);
     if (x % y == 0) return x / y;
     if ((x >= 0 && y > 0) || (x < 0 && y < 0))
         return x / y;
@@ -15,9 +15,7 @@ ll myCeil(ll x, ll y) {
     return -myFloor(-x, y);
 }
 
-
 int main() {
-
     {
         // Normally use this [for non-negative numbers]
 
@@ -36,7 +34,6 @@ int main() {
 
         cout << f << " " << c << endl;
     }
-
 
     return 0;
 }

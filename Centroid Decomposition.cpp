@@ -40,34 +40,34 @@ using pll = P<ll, ll>;
 
 
 template<typename T>
-void pout(T &a, string sep = " ", string fin = "\n") {
+void pout(T& a, string sep = " ", string fin = "\n") {
     cout << a.first << sep << a.second << fin;
 }
 
 template<typename T>
-void print(T &a, ll l, ll r, string sep = " ", string fin = "\n") {
+void print(T& a, ll l, ll r, string sep = " ", string fin = "\n") {
     for (ll i = l; i <= r; i++)
         cout << a[i] << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairs(T &a, ll l, ll r, string fin = "\n") {
+void printPairs(T& a, ll l, ll r, string fin = "\n") {
     for (ll i = l; i <= r; i++)
         pout(a[i]);
     cout << fin;
 }
 
 template<typename T>
-void printAll(T &a, string sep = " ", string fin = "\n") {
-    for (auto &ele: a)
+void printAll(T& a, string sep = " ", string fin = "\n") {
+    for (auto& ele : a)
         cout << ele << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairsAll(T &a, string fin = "\n") {
-    for (auto &ele: a)
+void printPairsAll(T& a, string fin = "\n") {
+    for (auto& ele : a)
         pout(ele);
     cout << fin;
 }
@@ -89,7 +89,7 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
@@ -115,7 +115,7 @@ int n = 0, k = 0, mxDepth = 0;
 
 void getSubSize(int node, int par) {
     subsize[node] = 1;
-    for (int &child: adj[node]) {
+    for (int& child : adj[node]) {
         if (child != par && !done[child]) {
             getSubSize(child, node);
             subsize[node] += subsize[child];
@@ -127,7 +127,7 @@ void fillCnt(int node, int par, int depth) {
     if (depth > k) return;
     mxDepth = max(mxDepth, depth);
     cnt[depth]++;
-    for (int &child: adj[node]) {
+    for (int& child : adj[node]) {
         if (child != par && !done[child]) {
             fillCnt(child, node, depth + 1);
         }
@@ -137,7 +137,7 @@ void fillCnt(int node, int par, int depth) {
 void getCnt(int node, int par, int depth) {
     if (depth > k) return;
     ans += cnt[k - depth];
-    for (int &child: adj[node]) {
+    for (int& child : adj[node]) {
         if (child != par && !done[child]) {
             getCnt(child, node, depth + 1);
         }
@@ -152,7 +152,7 @@ void centroidDecomp(int node = 1) {
     int centroid = node, par = -1;
     while (true) {
         bool stop = true;
-        for (int &child: adj[centroid]) {
+        for (int& child : adj[centroid]) {
             if (child != par && !done[child]) {
                 if (subsize[child] > subsize[node] / 2) {
                     stop = false;
@@ -170,7 +170,7 @@ void centroidDecomp(int node = 1) {
     mxDepth = 0;
 
     // Perform task / query
-    for (int &child: adj[centroid]) {
+    for (int& child : adj[centroid]) {
         if (!done[child]) {
             getCnt(child, centroid, 1);
             fillCnt(child, centroid, 1);
@@ -179,13 +179,13 @@ void centroidDecomp(int node = 1) {
     fill(cnt + 1, cnt + mxDepth + 1, 0);
 
     // Find next centroid
-    for (int &child: adj[centroid]) {
+    for (int& child : adj[centroid]) {
         if (!done[child])
             centroidDecomp(child);
     }
 }
 
-void solve() {
+void solve(int tc) {
     read(n, k);
 
     REPF(i, 1, n - 1) {
@@ -203,29 +203,27 @@ void solve() {
     outln(ans);
 }
 
-
-int main() {
-    auto OJ = []() -> void {
+void OJ() {
 #ifndef ONLINE_JUDGE
-        freopen("input.txt", "r", stdin);
-        freopen("output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
 #endif
-    };
+}
+
+signed main() {
+    OJ();
 
     cin.tie(0)->sync_with_stdio(0);
 
-    OJ();
-
     // cout << fixed << setprecision(10);
 
-    // precomp();
+    // prec();
 
     int tc = 1;
     // cin >> tc;
     for (int i = 1; i <= tc; i++) {
-        // cout << "Case " << i << ": ";
-        solve();
-        // cout << nl;
+        // cout << "Case " << i << ":" << nl;
+        solve(i);
     }
 
     return 0;

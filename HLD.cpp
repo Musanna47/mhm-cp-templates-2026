@@ -51,29 +51,29 @@ void pout(T a, string sep = " ", string fin = "\n") {
 }
 
 template<typename T>
-void print(T &a, ll l, ll r, string sep = " ", string fin = "\n") {
+void print(T& a, ll l, ll r, string sep = " ", string fin = "\n") {
     for (ll i = l; i <= r; i++)
         cout << a[i] << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairs(T &a, ll l, ll r, string fin = "\n") {
+void printPairs(T& a, ll l, ll r, string fin = "\n") {
     for (ll i = l; i <= r; i++)
         pout(a[i]);
     cout << fin;
 }
 
 template<typename T>
-void printAll(T &a, string sep = " ", string fin = "\n") {
-    for (auto &ele: a)
+void printAll(T& a, string sep = " ", string fin = "\n") {
+    for (auto& ele : a)
         cout << ele << sep;
     cout << fin;
 }
 
 template<typename T>
-void printPairsAll(T &a, string fin = "\n") {
-    for (auto &ele: a)
+void printPairsAll(T& a, string fin = "\n") {
+    for (auto& ele : a)
         pout(ele);
     cout << fin;
 }
@@ -95,13 +95,13 @@ void outln(Args... args) {
 }
 
 template<typename T>
-void vin(T &a, ll l, ll r) {
+void vin(T& a, ll l, ll r) {
     for (ll i = l; i <= r; i++)
         cin >> a[i];
 }
 
 template<typename T>
-void makeUnique(T &a) {
+void makeUnique(T& a) {
     a.erase(unique(all(a)), a.end());
 }
 
@@ -144,7 +144,7 @@ int dfs_sz(int u = 1, int p = 0) {
     par[u] = p;
     depth[u] = depth[p] + 1;
     int sz = 1, mx = 0;
-    for (auto &v: G[u]) {
+    for (auto& v : G[u]) {
         if (v == p) continue;
         int child_sz = dfs_sz(v, u);
         if (child_sz > mx) mx = child_sz, heavy[u] = v;
@@ -159,7 +159,7 @@ void dfs_hld(int u = 1, int p = 0) {
     else top[u] = u;
     if (heavy[u]) {
         dfs_hld(heavy[u], u);
-        for (auto &v: G[u]) {
+        for (auto& v : G[u]) {
             if (v == p || v == heavy[u]) continue;
             dfs_hld(v, u);
         }
